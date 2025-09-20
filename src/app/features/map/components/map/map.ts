@@ -16,7 +16,7 @@ import {
   EventData,
 } from '@maplibre/ngx-maplibre-gl';
 import maplibregl, { MapMouseEvent, StyleSpecification } from 'maplibre-gl';
-import { Feature, FeatureCollection, Point } from 'geojson';
+import { FeatureCollection, Point } from 'geojson';
 
 import { APP_CONSTANTS } from '../../../../shared/constants/constants';
 import { ImportPoi } from '../../../poi/components/import-poi/import-poi';
@@ -124,12 +124,17 @@ export class Map implements OnInit, AfterViewInit, OnDestroy {
     const coords = fc.features.map((f) => f.geometry.coordinates as [number, number]);
     if (coords.length === 0) return;
 
+    const map = this.mapComponent().mapInstance;
+
+    if (coords.length === 1) {
+      map.flyTo({ center: coords[0], zoom: 14, essential: true });
+      return;
+    }
+
     const bounds = coords.reduce(
       (b, c) => b.extend(c),
       new maplibregl.LngLatBounds(coords[0], coords[0])
     );
-
-    const map = this.mapComponent().mapInstance;
 
     map.fitBounds(bounds, {
       padding: 50,
