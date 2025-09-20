@@ -1,4 +1,10 @@
-<mgl-map [style]="style" [zoom]="zoom()" [center]="center()" class="map-container">
+<mgl-map
+  [style]="style"
+  [zoom]="zoom()"
+  [center]="center()"
+  class="map-container"
+  (mapClick)="onMapClick($event)"
+>
   <mgl-geojson-source
     id="pois"
     [data]="(pois$ | async) || { type: 'FeatureCollection', features: [] }"
@@ -23,3 +29,11 @@
   <app-export-poi></app-export-poi>
   <app-reset-poi></app-reset-poi>
 </div>
+
+<app-poi-dialog
+  [show]="showDialog()"
+  [lng]="dialogLng()"
+  [lat]="dialogLat()"
+  (save)="addPoi($event)"
+  (close)="onCloseDialog()"
+></app-poi-dialog>

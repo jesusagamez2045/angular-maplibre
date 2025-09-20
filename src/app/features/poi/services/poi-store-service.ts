@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { FeatureCollection, GeoJsonProperties, Point } from 'geojson';
+import { Feature, FeatureCollection, GeoJsonProperties, Point } from 'geojson';
 import { APP_CONSTANTS } from '../../../shared/constants/constants';
+import { PoiInput } from '../models/poi-input.model';
 
 @Injectable({
   providedIn: 'root',
@@ -36,6 +37,20 @@ export class PoiStoreService {
         console.warn('Invalid localStorage data, ignoring', e);
       }
     }
+  }
+
+  public addPoi(poi: PoiInput): void {
+    const newFeature: Feature<Point> = {
+      type: 'Feature',
+      geometry: { type: 'Point', coordinates: poi.coordinates },
+      properties: { name: poi.name, category: poi.category },
+    };
+
+    const current = this.getCurrentFeatures();
+    this.setFeatures({
+      ...current,
+      features: [...current.features, newFeature],
+    });
   }
 
   public clear(): void {

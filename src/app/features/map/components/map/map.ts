@@ -6,11 +6,17 @@ import {
   input,
   OnDestroy,
   OnInit,
+  signal,
   viewChild,
 } from '@angular/core';
-import { MapComponent, GeoJSONSourceComponent, LayerComponent } from '@maplibre/ngx-maplibre-gl';
-import maplibregl, { StyleSpecification } from 'maplibre-gl';
-import { FeatureCollection, Point } from 'geojson';
+import {
+  MapComponent,
+  GeoJSONSourceComponent,
+  LayerComponent,
+  EventData,
+} from '@maplibre/ngx-maplibre-gl';
+import maplibregl, { MapMouseEvent, StyleSpecification } from 'maplibre-gl';
+import { Feature, FeatureCollection, Point } from 'geojson';
 
 import { APP_CONSTANTS } from '../../../../shared/constants/constants';
 import { ImportPoi } from '../../../poi/components/import-poi/import-poi';
@@ -19,6 +25,8 @@ import { ResetPoi } from '../../../poi/components/reset-poi/reset-poi';
 import { SavePoi } from '../../../poi/components/save-poi/save-poi';
 import { Subscription } from 'rxjs';
 import { ExportPoi } from '../../../poi/components/export-poi/export-poi';
+import { PoiDialog } from '../../../poi/components/poi-dialog/poi-dialog';
+import { PoiInput } from '../../../poi/models/poi-input.model';
 
 @Component({
   selector: 'app-map',
@@ -31,6 +39,7 @@ import { ExportPoi } from '../../../poi/components/export-poi/export-poi';
     ResetPoi,
     SavePoi,
     ExportPoi,
+    PoiDialog,
   ],
   templateUrl: './map.html',
   styleUrl: './map.scss',
@@ -44,6 +53,10 @@ export class Map implements OnInit, AfterViewInit, OnDestroy {
   private readonly _poiStore = inject(PoiStoreService);
   private _poiSub: Subscription | null = null;
   public readonly pois$ = this._poiStore.getFeatureCollection$();
+
+  public showDialog = signal(false);
+  public dialogLat = signal(0);
+  public dialogLng = signal(0);
 
   public readonly style: StyleSpecification = {
     version: 8,
@@ -78,6 +91,31 @@ export class Map implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this._poiSub?.unsubscribe();
+  }
+
+  public onMapClick(event: MapMouseEvent & EventData) {
+    const [lon, lat] = event.lngLat.toArray();
+
+    this.dialogLat.set(lat);
+    this.dialogLng.set(lon);
+    this.showDialog.set(true);
+  }
+
+  public addPoi(poi: PoiInput): void {
+    this._poiStore.addPoi(poi);
+    this.onCloseDialog();
+
+    alert(
+      `Se ha añadido el POI "${poi.name}" en [${poi.coordinates[1].toFixed(
+        4
+      )}, ${poi.coordinates[0].toFixed(4)}]`
+    );
+  }
+
+  public onCloseDialog(): void {
+    this.showDialog.set(false);
+    this.dialogLat.set(0);
+    this.dialogLng.set(0);
   }
 
   private fitToFeatures(fc: FeatureCollection<Point>) {

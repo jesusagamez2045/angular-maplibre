@@ -1,0 +1,33 @@
+@if (show()) {
+<div class="dialog-backdrop">
+  <div class="dialog">
+    <h2>Nuevo POI</h2>
+
+    <p class="coords">
+      📍 Longitud: {{ lng() | number : '1.6-6' }}, Latitud: {{ lat() | number : '1.6-6' }}
+    </p>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form">
+      <div class="form-group">
+        <label for="name">Nombre</label>
+        <input type="text" formControlName="name" />
+        @if (form.controls['name'].invalid && form.controls['name'].touched) {
+        <small class="error"> El nombre es obligatorio </small>}
+      </div>
+
+      <div class="form-group">
+        <label for="category">Categoría</label>
+        <input type="text" formControlName="category" />
+        @if (form.controls['category'].invalid && form.controls['category'].touched) {
+        <small class="error"> La categoría es obligatoria </small>
+        }
+      </div>
+
+      <div class="actions">
+        <button type="button" (click)="onCancel()">Cancelar</button>
+        <button type="submit" [disabled]="form.invalid">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+}
