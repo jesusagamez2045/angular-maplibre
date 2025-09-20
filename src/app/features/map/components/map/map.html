@@ -1,6 +1,23 @@
-<mgl-map
-  [style]="style"
-  [zoom]="zoom()"
-  [center]="center()"
->
+<mgl-map [style]="style" [zoom]="zoom()" [center]="center()" class="map-container">
+  <mgl-geojson-source
+    id="pois"
+    [data]="(pois$ | async) || { type: 'FeatureCollection', features: [] }"
+  >
+    <mgl-layer
+      id="pois-layer"
+      type="circle"
+      [source]="'pois'"
+      [paint]="{
+        'circle-radius': 10,
+        'circle-color': '#e63946',
+        'circle-stroke-color': '#000',
+        'circle-stroke-width': 2
+      }"
+    ></mgl-layer>
+  </mgl-geojson-source>
 </mgl-map>
+
+<div class="floating-controls">
+  <app-import-poi></app-import-poi>
+  <app-reset-poi></app-reset-poi>
+</div>
