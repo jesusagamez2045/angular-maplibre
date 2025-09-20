@@ -3,6 +3,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Feature, FeatureCollection, GeoJsonProperties, Point } from 'geojson';
 import { APP_CONSTANTS } from '../../../shared/constants/constants';
 import { PoiInput } from '../models/poi-input.model';
+import { PoiFeature } from '../models/poi-feature.model';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +19,20 @@ export class PoiStoreService {
   }
 
   public setFeatures(fc: FeatureCollection<Point>): void {
-    this._features$.next(fc);
+    const withIds: PoiFeature[] = fc.features.map((f) => ({
+      ...f,
+      properties: {
+        ...(f.properties as any),
+        id: (f.properties as any)?.id ?? crypto.randomUUID(),
+        name: (f.properties as any)?.name || 'Unnamed',
+        category: (f.properties as any)?.category || 'Uncategorized',
+      },
+    }));
+
+    this._features$.next({
+      type: 'FeatureCollection',
+      features: withIds,
+    });
   }
 
   public saveToLocal(): void {
