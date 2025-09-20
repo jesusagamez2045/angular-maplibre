@@ -18,6 +18,10 @@ export class PoiStoreService {
 
   public setFeatures(fc: FeatureCollection<Point>): void {
     this._features$.next(fc);
+  }
+
+  public saveToLocal(): void {
+    const fc = this._features$.getValue();
     localStorage.setItem(APP_CONSTANTS.STORAGE.POI_EDITOR_STATE, JSON.stringify(fc));
   }
 

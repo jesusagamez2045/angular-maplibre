@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
-import { Map } from './features/map/components/map/map';
 
 export const routes: Routes = [
-  { path: '', component: Map },
+  { path: '', loadComponent: () => import('./features/map/components/map/map').then((m) => m.Map) },
   { path: '**', redirectTo: '' },
 ];
