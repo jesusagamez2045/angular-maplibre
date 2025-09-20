@@ -18,6 +18,7 @@ import { PoiStoreService } from '../../../poi/services/poi-store-service';
 import { ResetPoi } from '../../../poi/components/reset-poi/reset-poi';
 import { SavePoi } from '../../../poi/components/save-poi/save-poi';
 import { Subscription } from 'rxjs';
+import { ExportPoi } from '../../../poi/components/export-poi/export-poi';
 
 @Component({
   selector: 'app-map',
@@ -29,6 +30,7 @@ import { Subscription } from 'rxjs';
     AsyncPipe,
     ResetPoi,
     SavePoi,
+    ExportPoi,
   ],
   templateUrl: './map.html',
   styleUrl: './map.scss',

@@ -42,4 +42,8 @@ export class PoiStoreService {
     localStorage.removeItem(APP_CONSTANTS.STORAGE.POI_EDITOR_STATE);
     this._features$.next({ type: 'FeatureCollection', features: [] });
   }
+
+  public getCurrentFeatures(): FeatureCollection<Point, GeoJsonProperties> {
+    return this._features$.getValue();
+  }
 }

@@ -22,9 +22,16 @@ export class ImportPoi {
     reader.onload = () => {
       try {
         const data = JSON.parse(reader.result as string);
-        const { valid, invalid } = this._geoJsonService.validateFeatureCollection(data);
+        const { valid, invalid, report } = this._geoJsonService.validateFeatureCollection(data);
         this._poiStore.setFeatures(valid);
-        alert(`Importados: ${valid.features.length}, descartados: ${invalid.length}`);
+        alert(`
+          ✅ Importados: ${report.valid}
+          ❌ Inválidos: ${report.invalid}
+            - Sin nombre: ${report.errors.missingName}
+            - Sin categoría: ${report.errors.missingCategory}
+            - Coordenadas inválidas: ${report.errors.invalidCoordinates}
+            - Geometría inválida: ${report.errors.invalidGeometry}
+          `);
       } catch {
         alert('Archivo inválido');
       }
