@@ -22,7 +22,7 @@ export class ImportPoi {
     reader.onload = () => {
       try {
         const data = JSON.parse(reader.result as string);
-        const { valid, invalid, report } = this._geoJsonService.validateFeatureCollection(data);
+        const { valid, report } = this._geoJsonService.validateFeatureCollection(data);
         this._poiStore.setFeatures(valid);
         alert(`
           ✅ Importados: ${report.valid}
