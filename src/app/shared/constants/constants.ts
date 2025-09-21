@@ -5,5 +5,6 @@ export const APP_CONSTANTS = {
   MAP: {
     INITIAL_CENTER: [-70.6483, -33.4569] as [number, number],
     INITIAL_ZOOM: 12,
+    SNAP_STEP: 0.001,
   },
 };

@@ -28,6 +28,7 @@ import { Subscription } from 'rxjs';
 import { ExportPoi } from '../../../poi/components/export-poi/export-poi';
 import { PoiDialog } from '../../../poi/components/poi-dialog/poi-dialog';
 import { PoiInput } from '../../../poi/models/poi-input.model';
+import { snapToGrid } from '../../../../shared/constants/utils/snap.utils';
 
 @Component({
   selector: 'app-map',
@@ -100,9 +101,12 @@ export class Map implements OnInit, AfterViewInit, OnDestroy {
 
   public onMapClick(event: MapMouseEvent & EventData) {
     const [lon, lat] = event.lngLat.toArray();
+    const snappedCoords = snapToGrid([lon, lat], 0.001);
 
-    this.dialogLat.set(lat);
-    this.dialogLng.set(lon);
+    this.dialogLat.set(
+      snappedCoords[1]
+    );
+    this.dialogLng.set(snappedCoords[0]);
     this.showDialog.set(true);
   }
 
