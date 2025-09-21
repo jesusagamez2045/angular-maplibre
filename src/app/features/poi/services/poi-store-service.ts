@@ -45,7 +45,7 @@ export class PoiStoreService {
     if (saved) {
       try {
         const parsed: FeatureCollection<Point, GeoJsonProperties> = JSON.parse(saved);
-        this._features$.next(parsed);
+        this.setFeatures(parsed);
       } catch (e) {
         this.clear();
         console.warn('Invalid localStorage data, ignoring', e);
