@@ -95,6 +95,16 @@ export class PoiStoreService {
     });
   }
 
+  public removePoiById(id: string): void {
+    const current = this.getCurrentFeatures();
+    const updated = current.features.filter((f) => (f.properties as PoiFeature).id !== id);
+
+    this.setFeatures({
+      ...current,
+      features: updated,
+    });
+  }
+
   public clear(): void {
     localStorage.removeItem(APP_CONSTANTS.STORAGE.POI_EDITOR_STATE);
     this._features$.next({ type: 'FeatureCollection', features: [] });

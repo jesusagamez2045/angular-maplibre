@@ -20,6 +20,7 @@ export class PoiDialog {
 
   public save = output<PoiInput>();
   public close = output<void>();
+  public delete = output<void>();
 
   public form = this.formBuilder.group({
     name: ['', Validators.required],
@@ -52,6 +53,15 @@ export class PoiDialog {
       });
       this.form.reset();
     }
+  }
+
+  public deletePoi(): void {
+    if (!this.poiData()) return;
+
+    const confirmDelete = confirm(
+      `¿Estás seguro de que deseas eliminar el POI "${this.poiData()?.name}"?`
+    );
+    if (confirmDelete) this.delete.emit();
   }
 
   public onCancel(): void {

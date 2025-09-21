@@ -122,6 +122,14 @@ export class Map implements OnInit, AfterViewInit, OnDestroy {
     );
   }
 
+  public deletePoi(): void {
+    if (!this.editingPoiId() || !this.editingPoi()) return;
+
+    this._poiStore.removePoiById(this.editingPoiId()!);
+    alert(`Se ha eliminado el POI "${this.editingPoi()!.name}"`);
+    this.onCloseDialog();
+  }
+
   public onCloseDialog(): void {
     this.showDialog.set(false);
     this.dialogLat.set(0);

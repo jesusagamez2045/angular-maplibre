@@ -25,6 +25,9 @@
 
       <div class="actions">
         <button type="button" (click)="onCancel()">Cancelar</button>
+        @if (poiData()) {
+          <button type="button" class="danger" (click)="deletePoi()">Eliminar</button>
+        }
         <button type="submit" [disabled]="form.invalid">Guardar</button>
       </div>
     </form>
