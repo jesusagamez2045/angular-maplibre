@@ -24,7 +24,7 @@ import { ImportPoi } from '../../../poi/components/import-poi/import-poi';
 import { PoiStoreService } from '../../../poi/services/poi-store-service';
 import { ResetPoi } from '../../../poi/components/reset-poi/reset-poi';
 import { SavePoi } from '../../../poi/components/save-poi/save-poi';
-import { Subscription } from 'rxjs';
+import { Subscription, take } from 'rxjs';
 import { ExportPoi } from '../../../poi/components/export-poi/export-poi';
 import { PoiDialog } from '../../../poi/components/poi-dialog/poi-dialog';
 import { PoiInput } from '../../../poi/models/poi-input.model';
@@ -88,7 +88,7 @@ export class Map implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this._poiSub = this.pois$.subscribe((fc) => {
+    this._poiSub = this.pois$.pipe(take(1)).subscribe((fc) => {
       if (fc.features.length > 0 && this.mapComponent()) {
         this.fitToFeatures(fc);
       }
@@ -103,9 +103,7 @@ export class Map implements OnInit, AfterViewInit, OnDestroy {
     const [lon, lat] = event.lngLat.toArray();
     const snappedCoords = snapToGrid([lon, lat], 0.001);
 
-    this.dialogLat.set(
-      snappedCoords[1]
-    );
+    this.dialogLat.set(snappedCoords[1]);
     this.dialogLng.set(snappedCoords[0]);
     this.showDialog.set(true);
   }
@@ -188,6 +186,13 @@ export class Map implements OnInit, AfterViewInit, OnDestroy {
 
   public onPoiLeave(): void {
     this.hoveredPoi.set(null);
+  }
+
+  public fitToCurrentPois(): void {
+    const fc = this._poiStore.getCurrentFeatures();
+    if (fc.features.length > 0) {
+      this.fitToFeatures(fc);
+    }
   }
 
   private fitToFeatures(fc: FeatureCollection<Point>) {

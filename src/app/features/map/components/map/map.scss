@@ -18,4 +18,19 @@ mgl-map {
   gap: 0.8rem;
   flex-direction: column;
   align-items: flex-end;
+
+  button {
+    background: #1976d2;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+
+    &:hover {
+      background: #125a9c;
+    }
+  }
 }
