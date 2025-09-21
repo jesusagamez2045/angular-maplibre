@@ -1,59 +1,49 @@
-# AngularMaplibre
+## angular-maplibre
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.2.
+### ■ Requisitos de entorno
 
-## Development server
+- Node.js >= 18.x
+- Angular CLI >= 17.x (`npm install -g @angular/cli`)
 
-To start a local development server, run:
+### ■ Instalación, compilación y ejecución
 
-```bash
-ng serve
-```
+1. Instalar dependencias:
+	```sh
+	npm install
+	```
+2. Levantar el proyecto en modo desarrollo:
+	```sh
+	npm start
+	```
+3. Compilar para producción:
+	```sh
+	npm run build
+	```
+4. Ejecutar tests:
+	```sh
+	npm test
+	```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+### ■ Decisiones de arquitectura y trade-offs
 
-## Code scaffolding
+- **Angular Standalone Components**: Se utiliza Angular 20+ con componentes standalone para mayor modularidad y menor boilerplate.
+- **MapLibre GL**: Se integra `@maplibre/ngx-maplibre-gl` para el renderizado de mapas interactivos, permitiendo independencia de proveedores propietarios.
+- **Gestión de POIs**: El estado de los POIs se gestiona con un servicio singleton (`PoiStoreService`) usando `BehaviorSubject` para reactividad y persistencia local (localStorage).
+- **Validación de GeoJSON**: Se implementa validación estricta de los datos importados/exportados para asegurar integridad y feedback al usuario.
+- **SCSS**: Se usa SCSS para estilos, facilitando la personalización y mantenimiento visual.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+**Trade-offs:**
+- No se utiliza un state manager global (NgRx, Akita) para mantener la simplicidad, dado el alcance del proyecto.
+- La persistencia es solo local (no hay backend), lo que limita la colaboración multiusuario.
 
-```bash
-ng generate component component-name
-```
+### ■ Limitaciones conocidas y posibles mejoras
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+- **Limitaciones:**
+  - Solo soporta puntos (Point) en GeoJSON, no líneas ni polígonos.
+  - La persistencia es local, se pierde al limpiar el almacenamiento del navegador.
 
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- **Posibles mejoras:**
+  - Añadir soporte para otros tipos de geometría (LineString, Polygon).
+  - Integrar autenticación y backend para persistencia real y multiusuario.
+  - Añadir tests E2E.
+  - Mejorar la UI/UX y accesibilidad.
