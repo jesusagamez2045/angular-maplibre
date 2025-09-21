@@ -14,8 +14,9 @@ import {
   GeoJSONSourceComponent,
   LayerComponent,
   EventData,
+  PopupComponent,
 } from '@maplibre/ngx-maplibre-gl';
-import maplibregl, { MapMouseEvent, StyleSpecification } from 'maplibre-gl';
+import maplibregl, { MapGeoJSONFeature, MapMouseEvent, StyleSpecification } from 'maplibre-gl';
 import { FeatureCollection, Point } from 'geojson';
 
 import { APP_CONSTANTS } from '../../../../shared/constants/constants';
@@ -40,6 +41,7 @@ import { PoiInput } from '../../../poi/models/poi-input.model';
     SavePoi,
     ExportPoi,
     PoiDialog,
+    PopupComponent,
   ],
   templateUrl: './map.html',
   styleUrl: './map.scss',
@@ -59,6 +61,7 @@ export class Map implements OnInit, AfterViewInit, OnDestroy {
   public dialogLng = signal(0);
   public editingPoiId = signal<string | null>(null);
   public editingPoi = signal<PoiInput | null>(null);
+  public hoveredPoi = signal<PoiInput | null>(null);
 
   public readonly style: StyleSpecification = {
     version: 8,
@@ -156,6 +159,31 @@ export class Map implements OnInit, AfterViewInit, OnDestroy {
     });
 
     this.showDialog.set(true);
+  }
+
+  public onPoiHover(
+    event: MapMouseEvent & {
+      features?: MapGeoJSONFeature[];
+    } & EventData
+  ): void {
+    if (!event.features || event.features.length === 0) {
+      this.hoveredPoi.set(null);
+      return;
+    }
+    const feature = event.features[0] as any;
+    const props = feature.properties as PoiInput;
+
+    if (feature) {
+      this.hoveredPoi.set({
+        name: props.name,
+        category: props.category,
+        coordinates: feature.geometry.coordinates,
+      });
+    }
+  }
+
+  public onPoiLeave(): void {
+    this.hoveredPoi.set(null);
   }
 
   private fitToFeatures(fc: FeatureCollection<Point>) {

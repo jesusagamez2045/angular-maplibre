@@ -20,8 +20,19 @@
         'circle-stroke-width': 2
       }"
       (layerClick)="onPoiClick($event)"
+      (layerMouseEnter)="onPoiHover($event)"
+      (layerMouseLeave)="onPoiLeave()"
     ></mgl-layer>
   </mgl-geojson-source>
+  @if (hoveredPoi()) {
+  <mgl-popup [lngLat]="hoveredPoi()!.coordinates" [closeButton]="false" [closeOnClick]="false">
+    <div class="popup-content">
+      <strong>{{ hoveredPoi()!.name }}</strong
+      ><br />
+      Categoría: {{ hoveredPoi()!.category }}
+    </div>
+  </mgl-popup>
+  }
 </mgl-map>
 
 <div class="floating-controls">
