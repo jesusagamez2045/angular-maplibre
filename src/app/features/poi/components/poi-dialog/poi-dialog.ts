@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, effect, inject, input, output } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { PoiStoreService } from '../../services/poi-store-service';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+
 import { PoiInput } from '../../models/poi-input.model';
 
 @Component({
@@ -14,8 +14,8 @@ export class PoiDialog {
   public show = input<boolean>(false);
   public lat = input.required<number>();
   public lng = input.required<number>();
+  public poiData = input<PoiInput | null>(null);
 
-  private readonly _poiStore = inject(PoiStoreService);
   private formBuilder = inject(FormBuilder);
 
   public save = output<PoiInput>();
@@ -30,6 +30,15 @@ export class PoiDialog {
     effect(() => {
       if (this.show()) {
         this.form.reset();
+      }
+    });
+
+    effect(() => {
+      if (this.poiData()) {
+        this.form.patchValue({
+          name: this.poiData()!.name,
+          category: this.poiData()!.category,
+        });
       }
     });
   }

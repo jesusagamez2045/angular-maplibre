@@ -67,6 +67,34 @@ export class PoiStoreService {
     });
   }
 
+  public updatePoi(id: string, poi: PoiInput): void {
+    const current = this.getCurrentFeatures();
+    const updated = [...current.features];
+
+    const index = updated.findIndex((f) => (f.properties as any)?.id === id);
+
+    if (index === -1) {
+      console.warn(`POI with id ${id} not found`);
+      return;
+    }
+
+    updated[index] = {
+      type: 'Feature',
+      geometry: { type: 'Point', coordinates: poi.coordinates },
+      properties: {
+        ...(updated[index].properties as any),
+        name: poi.name,
+        category: poi.category,
+        id,
+      },
+    };
+
+    this.setFeatures({
+      ...current,
+      features: updated,
+    });
+  }
+
   public clear(): void {
     localStorage.removeItem(APP_CONSTANTS.STORAGE.POI_EDITOR_STATE);
     this._features$.next({ type: 'FeatureCollection', features: [] });

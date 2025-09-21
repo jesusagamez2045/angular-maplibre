@@ -19,6 +19,7 @@
         'circle-stroke-color': '#000',
         'circle-stroke-width': 2
       }"
+      (layerClick)="onPoiClick($event)"
     ></mgl-layer>
   </mgl-geojson-source>
 </mgl-map>
@@ -34,6 +35,7 @@
   [show]="showDialog()"
   [lng]="dialogLng()"
   [lat]="dialogLat()"
+  [poiData]="editingPoi()"
   (save)="addPoi($event)"
   (close)="onCloseDialog()"
 ></app-poi-dialog>

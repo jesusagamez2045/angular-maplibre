@@ -57,6 +57,8 @@ export class Map implements OnInit, AfterViewInit, OnDestroy {
   public showDialog = signal(false);
   public dialogLat = signal(0);
   public dialogLng = signal(0);
+  public editingPoiId = signal<string | null>(null);
+  public editingPoi = signal<PoiInput | null>(null);
 
   public readonly style: StyleSpecification = {
     version: 8,
@@ -102,6 +104,14 @@ export class Map implements OnInit, AfterViewInit, OnDestroy {
   }
 
   public addPoi(poi: PoiInput): void {
+    if (this.editingPoiId() && this.editingPoiId()) {
+      this._poiStore.updatePoi(this.editingPoiId()!, poi);
+      this.onCloseDialog();
+
+      alert(`Se ha editado el POI "${poi.name}"`);
+      return;
+    }
+
     this._poiStore.addPoi(poi);
     this.onCloseDialog();
 
@@ -116,6 +126,28 @@ export class Map implements OnInit, AfterViewInit, OnDestroy {
     this.showDialog.set(false);
     this.dialogLat.set(0);
     this.dialogLng.set(0);
+    this.editingPoiId.set(null);
+    this.editingPoi.set(null);
+  }
+
+  public onPoiClick(event: any): void {
+    if (!event.features || event.features.length === 0) return;
+
+    const feature = event.features[0];
+    const coordinates = feature.geometry.coordinates;
+    const properties = feature.properties;
+
+    this.editingPoiId.set(feature.properties.id);
+    this.dialogLat.set(coordinates[1]);
+    this.dialogLng.set(coordinates[0]);
+
+    this.editingPoi.set({
+      name: properties.name,
+      category: properties.category,
+      coordinates: coordinates,
+    });
+
+    this.showDialog.set(true);
   }
 
   private fitToFeatures(fc: FeatureCollection<Point>) {

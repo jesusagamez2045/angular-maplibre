@@ -1,7 +1,7 @@
 @if (show()) {
 <div class="dialog-backdrop">
   <div class="dialog">
-    <h2>Nuevo POI</h2>
+    <h2>@if (poiData()) { Editar POI } @else { Nuevo POI }</h2>
 
     <p class="coords">
       📍 Longitud: {{ lng() | number : '1.6-6' }}, Latitud: {{ lat() | number : '1.6-6' }}
